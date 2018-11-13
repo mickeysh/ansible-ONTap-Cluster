@@ -1,0 +1,24 @@
+node:
+  hostname: "172.16.246.21"
+  username: "admin"
+  password: "Netapp1!"
+# Aggregate Variables
+aggr:
+  name: aggr1
+  disk_count: 24
+  disk_size: 
+  raid_size: 24
+  raid_type: raid_dp
+# SVM Variables
+vservers:
+  - vserver1: 
+    # LIF Variables
+    lifs:
+      - lif1:
+    volumes:
+      - volume1:
+    exports:
+      - export1:
+        rules:
+          - rule1:
+

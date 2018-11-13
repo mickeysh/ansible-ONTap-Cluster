@@ -1,0 +1,10 @@
+---
+- name: ONTAP | Provision all cluster resources
+  hosts: localhost
+  vars_files:
+    - vars/connection.yml
+    - vars/node.yml
+    - vars/svm-test.yml
+  gather_facts: no
+  roles:
+    - ontap-svm

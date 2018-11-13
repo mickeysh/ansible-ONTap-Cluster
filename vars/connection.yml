@@ -1,0 +1,7 @@
+---
+node:
+  hostname: 172.16.246.21
+  username: admin
+  password: Netapp1!
+  https: true
+  validate_certs: false

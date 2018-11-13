@@ -1,0 +1,111 @@
+---
+# tasks file for ontap-svm
+- name: Create SVM
+  na_ontap_svm:
+    state: present
+    name: "{{ item.name }}"
+    root_volume: "{{ item.root_volume }}"
+    root_volume_aggregate: "{{ item.root_volume_aggregate }}"
+    root_volume_security_style: "{{ item.root_volume_security_style }}"
+    snapshot_policy: "{{ item.snapshot_policy }}"
+    subtype: "{{ item.subtype }}"
+    hostname: "{{ node.hostname }}"
+    username: "{{ node.username }}"
+    password: "{{ node.password }}"
+    https: "{{ node.https }}"
+    validate_certs: "{{ node.validate_certs }}"
+  with_items: 
+    - "{{ vservers }}"
+  when: item.name is defined
+
+# 1. Create LIFs for SVM
+- name: Create interface
+  na_ontap_interface:
+    state: present
+    address: "{{ item.1.address }}"
+    admin_status: "{{ item.1.admin_status }}"
+    failover_policy: "{{ item.1.failover_policy }}"
+    firewall_policy: "{{ item.1.firewall_policy }}"
+    home_node: "{{ item.1.home_node }}"
+    home_port: "{{ item.1.home_port }}"
+    interface_name: "{{ item.1.interface_name }}"
+    is_auto_revert: "{{ item.1.is_auto_revert }}"
+    netmask: "{{ item.1.netmask }}"
+    protocols: "{{ item.1.protocols }}"
+    role: "{{ item.1.role }}"
+    vserver: "{{ item.0.name }}"
+    hostname: "{{ node.hostname }}"
+    username: "{{ node.username }}"
+    password: "{{ node.password }}"
+    https: "{{ node.https }}"
+    validate_certs: "{{ node.validate_certs }}"
+  with_subelements: 
+    - "{{ vservers }}"
+    - lifs
+  when: item.1.address is defined
+
+# 2. Create volumes for SVM
+- name: Create Volumes
+  na_ontap_volume:
+    state: present
+    aggregate_name: "{{ item.1.aggregate_name }}"
+    encrypt: "{{ item.1.encrypt }}"
+    is_infinite: "{{ item.1.is_infinite }}"
+    is_online: "{{ item.1.is_online }}"
+    junction_path: "{{ item.1.junction_path }}"
+    name: "{{ item.1.name }}"
+    percent_snapshot_space:  "{{ item.1.percent_snapshot_space }}"
+    policy: "{{ item.1.policy }}"
+    size: "{{ item.1.size }}"
+    size_unit: "{{ item.1.size_unit }}"
+    space_guarantee: "{{ item.1.space_guarantee }}"
+    type: "{{ item.1.type }}" 
+    volume_security_style: "{{ item.1.volume_security_style }}"
+    vserver: "{{ item.0.name }}"
+    hostname: "{{ node.hostname }}"
+    username: "{{ node.username }}"
+    password: "{{ node.password }}"
+    https: "{{ node.https }}"
+    validate_certs: "{{ node.validate_certs }}"
+  with_subelements: 
+    - "{{ vservers }}"
+    - volumes
+  when: item.1.name is defined
+
+# 3. Create export policy for SVM
+- name: Create Export Policy 
+  na_ontap_export_policy:
+    state: present
+    name: "{{ item.1.name }}"
+    vserver: "{{ item.0.name }}"
+    hostname: "{{ node.hostname }}"
+    username: "{{ node.username }}"
+    password: "{{ node.password }}"
+    https: "{{ node.https }}"
+    validate_certs: "{{ node.validate_certs }}"
+  with_subelements: 
+    - "{{ vservers }}"
+    - exports
+  when: item.1.name is defined
+  
+# 4. Create export policy rules for export policy in SVM
+- name: Create Export Policy Rules
+  na_ontap_export_policy_rule:
+    state: present
+    allow_suid: "{{ item.1.allow_suid }}"
+    client_match: "{{ item.1.client_match }}"
+    policy_name: "{{ item.0.name }}"
+    protocol: "{{ item.1.protocol }}"
+    ro_rule: "{{ item.1.ro_rule }}"
+    rw_rule: "{{ item.1.rw_rule }}"
+    super_user_security: "{{ item.1.super_user_security }}"
+    vserver: "{{ vservers[0].name }}"
+    hostname: "{{ node.hostname }}"
+    username: "{{ node.username }}"
+    password: "{{ node.password }}"
+    https: "{{ node.https }}"
+    validate_certs: "{{ node.validate_certs }}"
+  with_subelements: 
+    - "{{ vservers[0].exports }}"
+    - rules
+  when: item.0.name is defined

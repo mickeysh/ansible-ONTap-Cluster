@@ -1,0 +1,8 @@
+---
+# Aggregate Variables
+aggr:
+  name: aggr1
+  disk_count: 24
+  disk_size: 
+  raid_size: 24
+  raid_type: raid_dp

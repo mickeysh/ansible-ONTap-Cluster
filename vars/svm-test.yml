@@ -1,0 +1,61 @@
+---
+# SVM Variables
+vservers:
+  - vserver1: 
+    name: testSVM
+    root_volume: testSVM_root
+    root_volume_aggregate: aggr1
+    root_volume_security_style: unix
+    snapshot_policy: none
+    subtype: default
+    # LIF Variables
+    lifs:
+      - lif1:
+        address: 172.16.246.23
+        admin_status: up
+        failover_policy: system-defined
+        firewall_policy: data
+        home_node: macluster-01
+        home_port: e0d
+        interface_name: lif1_mgmt_data_1
+        is_auto_revert: true
+        netmask: 255.255.255.0
+        protocols: nfs
+        role: data
+    volumes:
+      - volume1:
+        aggregate_name: aggr1
+        encrypt: no
+        is_infinite: no
+        is_online: yes
+        junction_path: /mickey
+        name: mickey
+        percent_snapshot_space:  0
+        policy: default
+        size: 10
+        size_unit: gb
+        space_guarantee: none
+        type: rw 
+        volume_security_style: mixed
+    exports:
+      - export1:
+        name: export1
+        rules:
+          - rule1:
+            allow_suid: yes
+            client_match: 0.0.0.0/0
+            protocol: any
+            ro_rule: any
+            rw_rule: any
+            super_user_security: any
+      - export2:
+        name: export2
+        rules:
+          - rule1:
+            allow_suid: yes
+            client_match: 0.0.0.0/0
+            protocol: any
+            ro_rule: any
+            rw_rule: any
+            super_user_security: any
+
